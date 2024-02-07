@@ -5,8 +5,7 @@
 angular.module('myApp.stats', ['ngRoute'])
 
 
-
-//enrutamiento a list
+//enrutamiento a lista de estadistica
 
 .config(['$routeProvider', function($routeProvider) {
 
@@ -126,7 +125,7 @@ $scope.getAllData = function(){
 
      $scope.resultados = response.data.records;
 
-     $scope.resultados = $scope.formatearDateCreated($scope.resultados);
+     //-$scope.resultados = $scope.formatearDateCreated($scope.resultados);
 
    });
 
@@ -142,36 +141,20 @@ $scope.getAllData = function(){
   ejemplos.
   : ===se convierte  en ===> =  
   */
-
+//TODO. agregar condicion para busqueda por year
+//TODO. agregar condicion para busqueda por mes
   $scope.getCondiciones = function(){
 
     console.log('controlador -transacciones-getCondiciones.inicio');
 
-    var cond = "", c1 = "", c2 = "", c3 = "";
-
-    //TODO. OJO. revisar estas condiciones
-
-    /*TODO. activar
-
-    if ($scope.condicionWhere !='' && !$scope.pago1_status && !$scope.pago2_status && $scope.filtros.status == ''){
-
-      //no se aplica filtros, se usa el select original sin filtros
-
-      $scope.condicionWhere = "";
-
-      return;
-
-    }
-
-    */
-
-
+    var cond = "", c1 = "", c2 = "", c3 = "", cc = "", condYear = "", condMonth = "";
+    var cyear= "", cmonth = "";
 
     if ($scope.filtros.status != ''){
 
       if ($scope.filtros.status == 'CANC'){
 
-        c1 = "status IN ('CA','CC','CO')"; //tipos de Cancelaciones, estan agrupadas en un solo status: CANCELADA
+        c1 = "status IN ('CANC','CA','CC','CO')"; //tipos de Cancelaciones, estan agrupadas en un solo status: CANCELADA
 
       }else{
 
@@ -184,8 +167,6 @@ $scope.getAllData = function(){
       c1 = "";
 
     }
-
-
 
     //TODO. revisar si comparar campos con '' es correcto, cuando value es null
     
@@ -212,8 +193,8 @@ $scope.getAllData = function(){
 
 
      //debugger;
-     //pago destino
-
+     //pago destino. no se usa en las estadisticas
+     /*
      if ($scope.pago2_status == true){//PD verificado
 
        //version1:
@@ -229,25 +210,27 @@ $scope.getAllData = function(){
        
        c3 = "status_PD:'A'"; //pago destino realizado
      }
-
+     */
 
     //changing conditions, 09.dic.2021
     
     //condicion not cancelled
-    var cc = "status NOT IN ('CA','CC','CO')";
-
+    cc    = "status NOT IN ('CANC','CA','CC','CO')";
+    
     console.log('c1: '+ c1);
     console.log('c2: '+ c2);
     console.log('c3: '+ c3);
     console.log('cc: '+ cc);
+    console.log('cyear: '+ cyear);
+    console.log('cmonth: '+ cmonth);
 
 
     //formar la condicion completa
 
     cond = c1;
 
-    if ($scope.mostrarFiltroPO ==true){//la interfaz esta mostrando el filtro de PAGO ORIGEN
-
+    if ($scope.mostrarFiltroPO ==true){
+      //la interfaz esta mostrando el filtro de PAGO ORIGEN
       cond = (cond=="" ? cc : cond+".AND."+cc); //add:no mostrar las canceladas
 
       cond = (cond=="" ? c2 : cond+".AND."+c2); //add:filtrar estatus='PO'
@@ -262,8 +245,41 @@ $scope.getAllData = function(){
 
     }
 
-    //DEBUG
+    if ($scope.mostrarFiltroYear ==true){//el usuario selecciono un año para filtrar
 
+      cond = (cond == "" ? cc : cond + ".AND." + cc); //add: no mostrar las canceladas
+      
+    }
+
+    if ($scope.mostrarFiltroMonth ==true){//el usuario selecciono un mes para filtrar
+
+      cond = (cond == "" ? cc : cond + ".AND." + cc); //add: no mostrar las canceladas
+      
+    }
+
+    //filtro por año. Ya funciona
+    if ($scope.filtros.year && $scope.filtros.year!=null){
+      if (cond != ''){
+        cyear = "EXTRACT(YEAR FROM a.date_created)='" + $scope.filtros.year.trim() + "' ";
+      }
+        
+
+      //filtro por mes, depende de que haya año seleccionado
+      if ($scope.filtros.month && $scope.filtros.month!=null){
+        cmonth = "EXTRACT(MONTH FROM a.date_created)='" + $scope.filtros.month.trim() + "' ";
+      }
+
+    }
+    
+
+    //agregar filtro año a la condicion, con o sin AND
+    if (cyear != "")
+      cond = (cond == "" ? cyear : cond + ".AND." + cyear);
+    
+    if (cmonth != "")
+      cond = (cond == "" ? cmonth : cond + ".AND." + cmonth);
+
+    //*DEBUG
     console.log('condicion string: '+ cond);
 
 
@@ -361,15 +377,6 @@ $scope.getAllData = function(){
 */
 
 
-
-      /*
-
-      $scope.pago2_status = false;
-
-      $scope.filtros = {status: 'New'};
-
-      */
-
     console.log('cond: '+ cond);
 
     console.log('controlador -transacciones-getCondiciones.fin');
@@ -440,6 +447,33 @@ $scope.getAllData = function(){
 
 //TODO. agregar filtro de login usuario, para usar la lupa del usuario.
 
+//TODO. agregar filtro año
+//TODO. agregar filtro de mes
+
+//function que se llama cuando se selecciona filtro de status 
+
+  //establece que botones de filtros mostrar que son excluyentes 
+
+$scope.selectedYear = function(){
+  
+  if($scope.filtros.status != ''){
+
+    $scope.mostrarFiltroYear = true;
+
+    return;
+
+  }else{
+    
+    $scope.mostrarFiltroYear = false;
+
+  }
+
+}
+
+$scope.selectedMonth = function(){
+
+  
+}
 
 
   /*inicializa filtros*/
@@ -454,28 +488,26 @@ $scope.getAllData = function(){
 
     //combinacion para operador destino:
 
+    //TODO. borrar, no se usa este filtro en las estadisticas
+    /*BLOCK.NO SE USA
     $scope.pago1_status = false; //filtro pago origen verificado/ o no
-
+    //TODO. borrar, no se usa este filtro en las estadisticas
     $scope.pago2_status = false; //filtro pago destino realizado/ o pendiente
+    */
 
 
-
-    /*combinacion para operador origen:
-
+    /*combinacion para operador A-origen:
     //$scope.pago1_status = false; //pago origen verificado, para que pueda aparecer algo
-
     //$scope.pago2_status = false; //pago destino no verificado
-
     */ 
 
 
 
     //combinacion para superadmin
-
+    /*BLOCK.NO SE USA
     $scope.mostrarFiltroPO = true; //mostrar filtro de pago origen
-
     $scope.mostrarFiltroPD = true; //mostrar filtro de pago destino
-
+    */
 
 
     /*combinacion para operador-origen. y nunca
@@ -488,7 +520,7 @@ $scope.getAllData = function(){
 
 
 
-    /*combinacion para operador-destino
+    /*combinacion para operador-destinoB
 
     //$scope.mostrarFiltroPO = false; // nunca mostrar filtro de pago origen
 
@@ -496,7 +528,8 @@ $scope.getAllData = function(){
 
     */
 
-    $scope.busq1 = ''; //se limpia filtro caja de busqueda
+    //se limpia filtro caja de busqueda
+    $scope.busq1 = ''; 
 
   };  
 
@@ -547,7 +580,9 @@ $scope.getAllData = function(){
 
         $scope.resultados = response.data.records;
 
-        $scope.resultados = $scope.formatearDateCreated($scope.resultados);
+        //-$scope.resultados = $scope.formatearDateCreated($scope.resultados);
+
+        //-$scope.resultados = $scope.formatearDateCreated($scope.resultados);
 
       });
 
@@ -574,26 +609,6 @@ $scope.getAllData = function(){
   $scope.cargarDataFiltrada = function($nroBoton){
 
    console.log('controlador -transacciones-getDataFiltrada.inicio');
-
-
-
-   //cambiar estados de botones
-
-   if($nroBoton == 1){
-
-        $scope.pago1_status = !$scope.pago1_status; 
-
-   }else if($nroBoton == 2){
-
-        $scope.pago2_status = !$scope.pago2_status; 
-
-   }else
-
-
-
-
-
-
 
    //TODO. simplicar este bloque de codigo.
 
