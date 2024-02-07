@@ -9,7 +9,7 @@ header("Content-Type: application/json; charset=UTF-8");
 
 include("../bd/connection.php");
 
-$sql ="SELECT codigo, nombre FROM pais order by nombre";
+$sql ="SELECT codigo, nombre FROM pais WHERE activo order by nombre";
 $result = $conn->query($sql);
 
 $outp = "";
