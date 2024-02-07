@@ -28,11 +28,11 @@
 
   </select>
 
-  &nbsp;&nbsp;
+  &nbsp;
 
 <!--TODO. reemplazar esta flecha por una imagen, o algo mas decente, un icono-->
 
-<span style="font-size: 2em; color: blue"><i class="fas fa-caret-right"></i></span> <!-- icon flecha derecha -->
+&nbsp;<span style="font-size: 2em; color: blue">&nbsp;<i class="fas fa-caret-right"></i></span> <!-- icon flecha derecha -->
 
 <!--span style="font-size: 2em; color: gray"> => </span-->
   &nbsp;&nbsp;
@@ -41,7 +41,8 @@
 
 
 
-<!--TODO. habilitar este select cuando se vayan a usar otros paises-->    
+<!--TODO. habilitar este select cuando se vayan a usar otros paises como destino, ademàs de VZLA
+borrando el atributo disabled="true"-->    
 
 <select name="cod_pais2" ng-model="filtros.cod_pais2" ng-change="cargarDataFiltrada()" disabled="true" 
 
@@ -54,8 +55,6 @@
       <option value="">-Destino-</option>
 
       <option value="VEN">Venezuela</option>
-
-      <!--TODO. llenar lista de paises-->
 
       <option ng-repeat="a in lista_paises" value="{{a.codigo}}">{{a.nombre}}</option>
 
@@ -71,7 +70,7 @@
 
   <select name="status" ng-model="filtros.status"
 
-  ng-change="selectedStatus();cargarDataFiltrada()"
+  ng-change="cargarDataFiltrada()"
 
   class="form-control input-sm" 
 
@@ -105,7 +104,37 @@
 
   </select>
 
+  <select name="year" ng-model="filtros.year"
+    ng-change="cargarDataFiltrada()"
+    class="form-control input-sm" 
+    style="max-width:120px; display:inline-block;">
+    <option value="">-Año-</option>
+    <option value="2021">2021</option>
+    <option value="2022">2022</option>
+    <option value="2023">2023</option>
+    <option value="2024">2024</option>
+  </select>
 
+  <select name="mes" ng-model="filtros.month"
+    ng-change="cargarDataFiltrada()"
+    class="form-control input-sm" 
+    style="max-width:120px; display:inline-block;"
+    ng-show="filtros.year != '' "
+    ng-hide="filtros.year == '' ">
+    <option value="">-Mes-</option>
+    <option value="1">Ene</option>
+    <option value="2">Feb</option>
+    <option value="3">Mar</option>
+    <option value="4">Abr</option>
+    <option value="5">May</option>
+    <option value="6">Jun</option>
+    <option value="7">Jul</option>
+    <option value="8">Ago</option>
+    <option value="9">Sep</option>
+    <option value="10">Oct</option>
+    <option value="11">Nov</option>
+    <option value="12">Dic</option>
+  </select>
 
 
   <!--filtro pago destino: pendiente / realizado-->
@@ -158,24 +187,15 @@
 </div-->
 
 
-
-
-
 <div class="p-2 bd-highlight">
-
   <!--boton para reset filtros-->
-
   <button type="button" class="btn btn-light" ng-click="onInit();" ng-show="filtros.status!=''" title="Limpiar todos los filtros">Quitar Filtros</button>
+</div>
 
 </div>
 
 
 </div>
-
-
-
-</div>
-
 
 
 <!--version anterior
@@ -191,12 +211,7 @@
 -->
 
 
-
-
-
 <!--fin filtros-->
-
-
 
 
 
@@ -311,7 +326,7 @@
 
     <td style="text-align:right"><span style="color:green">
 
-      {{ x.monto_dolares | number: 1.2}}</span><!--aqui debe ir el simbolo de la moneda, y no el pais--></td>
+      {{ x.monto_dolares | number: 0}}</span><!--aqui debe ir el simbolo de la moneda, y no el pais--></td>
 
 
 
@@ -564,19 +579,17 @@
 
 <b>DEBUG</b>
 
-condicion: {{condicionWhere}}
+</pre>condicion: {{condicionWhere}}</pre> <br>
 
 <pre>FILTROS: {{filtros|json}}</pre>
 
-<pre>Pago1: {{pago1_status|json}}</pre>
-
-<pre>Pago2: {{pago2_status|json}}</pre>
-
 <pre>resultados: {{resultados|json}}</pre>
+
+<pre>sql: {{resultados.sql|json}}</pre>
 
 </div>
 
--->
+DEBUG/END-->
 
 
 
