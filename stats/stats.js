@@ -147,8 +147,9 @@ $scope.getAllData = function(){
 
     console.log('controlador -transacciones-getCondiciones.inicio');
 
-    var cond = "", c1 = "", c2 = "", c3 = "", cc = "", condYear = "", condMonth = "";
-    var cyear= "", cmonth = "";
+    var cond = "", c1 = "", c2 = "", c3 = "", cc = "";
+    var cyear = "", cmonth = "";
+    var cpais1 = "";
 
     if ($scope.filtros.status != ''){
 
@@ -268,9 +269,8 @@ $scope.getAllData = function(){
       if ($scope.filtros.month && $scope.filtros.month!=null){
         cmonth = "EXTRACT(MONTH FROM a.date_created)='" + $scope.filtros.month.trim() + "' ";
       }
-
-    }
     
+    }
 
     //agregar filtro año a la condicion, con o sin AND
     if (cyear != "")
@@ -279,28 +279,23 @@ $scope.getAllData = function(){
     if (cmonth != "")
       cond = (cond == "" ? cmonth : cond + ".AND." + cmonth);
 
-    //*DEBUG
-    console.log('condicion string: '+ cond);
 
+    //filtro por mes, depende de que haya año seleccionado
+    if ($scope.filtros.cod_pais1 && $scope.filtros.cod_pais1 != null && $scope.filtros.cod_pais1 != ''){
+      cpais1 = "a.origen_codpais='" + $scope.filtros.cod_pais1.trim() + "'";
+    }
 
+    //agregar filtro de pais origen
+    if (cpais1 != "")
+      cond = (cond == "" ? cpais1 : cond + ".AND." + cpais1);
 
-    //cond = c1+c2+c3;
-
-    //cond = c1 + c2 + c3;
+      //*DEBUG
+    console.log('condicion aplicada string (no es sql): '+ cond);
 
 /**/
-
-
-
     //final: c1 + ".AND." + c2 + ".AND." + c3; pero sin AND para c2 o para c3
-
-
-
 /*
-
     cond = c1; //sin importar si c1 sea blanco o no
-
-
 
     var condB = ""; //union de c2 y c3
 
@@ -316,8 +311,6 @@ $scope.getAllData = function(){
 
     } 
 
-
-
     && c3 !=""){
 
     }
@@ -332,33 +325,13 @@ $scope.getAllData = function(){
 
     }
 
-
-
     if (cond !=)
 
     cond = c1 + condB;
-
 */
 
 
 
-
-
-/*
-
-    //formar la condicion completa
-
-    if (c1!=""){
-
-      cond += c1 + ".AND." + c2 + ".AND." + c3;
-
-    }else{
-
-      cond += c2 + ".AND." + c3;
-
-    }
-
-*/
 
   
 
@@ -456,7 +429,7 @@ $scope.getAllData = function(){
 
 $scope.selectedYear = function(){
   
-  if($scope.filtros.status != ''){
+  if($scope.filtros.year != ''){
 
     $scope.mostrarFiltroYear = true;
 
@@ -537,7 +510,7 @@ $scope.selectedMonth = function(){
 
   /*obtiene lista de las transacciones, que cumplen con los filtros*/
 
-  $scope.cargarDataFiltrada = function($nroBoton){
+$scope.cargarDataFiltrada = function(){
 
    console.log('controlador -transacciones-getDataFiltrada.inicio');
    
@@ -545,25 +518,13 @@ $scope.selectedMonth = function(){
 
    //cambiar estados de botones
 
-   if($nroBoton == 1){
-
-        $scope.pago1_status = !$scope.pago1_status; 
-
-   }else if($nroBoton == 2){
-
-        $scope.pago2_status = !$scope.pago2_status; 
-
-   }else
-
-
-
-
    //TODO. simplicar este bloque de codigo.
 
    $scope.condicionWhere = '';
 
    $scope.getCondiciones();
 
+   //si no hay filtros se muestra toda la data
    if ($scope.condicionWhere == ''){
 
     $scope.getAllData();
@@ -572,7 +533,8 @@ $scope.selectedMonth = function(){
 
    }
 
-  //devuelve lista de transacciones, aplicando filtros
+  
+   //lista data aplicando filtros
 
    $http.get("./status/list_filtrada.php?filtros=" + $scope.condicionWhere)
 
@@ -586,21 +548,9 @@ $scope.selectedMonth = function(){
 
       });
 
-    console.log('controlador -transacciones-getDataFiltrada.fin');
+    console.log('controlador -transacciones-cargarDataFiltrada.fin');
 
-  };
-
-
-
-  $scope.new = function (){
-
-    location.href = '#!/calc/';
-
-  };      
-
-
-
-
+}; //cargarDataFiltrada = function($nroBoton)
 
 
 
@@ -644,56 +594,7 @@ $scope.selectedMonth = function(){
 
 
 
-
-
-  /*obtiene lista de las transacciones, que cumplen con los filtros*/
-
-  $scope.listByUser = function($login){
-
-   console.log('controlador -transacciones-listByUser.inicio');
-
-
-
-   console.log('login: ' + $login);
-
-   if (!$login || $login === ''){
-
-      //TODO. mostrar mensaje de error en pantalla
-
-      return false;
-
-   }
-
-
-
-   //TODO. aqui debe indicarse el id de usuario o login 
-
-   $scope.condicionWhere = "a.login:'" + $login + "'";
-
-   console.log('login: ' + $login);
-
-
-
-  //devuelve lista de transacciones, aplicando filtros
-
-   $http.get("./stats/list_filtrada_user.php?filtros=" + $scope.condicionWhere)
-
-       .then(function (response) {
-
-        $scope.resultados = response.data.records;
-
-        $scope.resultados = $scope.formatearDateCreated($scope.resultados);
-
-      });
-
-    console.log('controlador -transacciones-listByUser.fin');
-
-  };//listByUser
-
-
-
-
-
+  //TODO. agregar parametro de usuario que inicia la rermesa, o preguntar el cliente al abrir la patalla /calc/
   $scope.new = function (){
 
     location.href = '#!/calc/';
@@ -702,11 +603,20 @@ $scope.selectedMonth = function(){
 
 
 
+
+  //TODO. obtener lista de transacciones por usuario logueado
+
+  $scope.listByUser = function($login){
+
+  };//listByUser-end
+
+
+
   //carga lista de paises para poblar el select
 
-  $scope.cargarPaises = function () {
+  $scope.cargarPaisesDestino = function () {
 
-    console.log('controlador:calc. funcion: cargarPaises. start');
+    console.log('controlador:calc. funcion: cargarPaisesDestino. start');
 
     $http.get("./paises/list_short.php")
 
@@ -726,7 +636,7 @@ $scope.selectedMonth = function(){
 
     })
 
-    console.log('controlador:calc. funcion: cargarPaises. end');
+    console.log('controlador:calc. funcion: cargarPaisesDestino. end');
 
   };
 
@@ -772,7 +682,7 @@ $scope.selectedMonth = function(){
 
     $scope.cargarPaisesOrigen();
 
-    $scope.cargarPaises();
+    $scope.cargarPaisesDestino();
 
     console.log('controlador -transacciones- fin');
 
