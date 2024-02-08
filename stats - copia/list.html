@@ -1,0 +1,617 @@
+ <!--template de lista de transacciones-->
+
+<div>
+
+<!--div class="d-inline-flex p-2 bd-highlight"-->
+
+<h3><a href="#!/stats/" title="Ver todas las transacciones">Estadísticas</a></h3> 
+
+<div class="d-flex bd-highlight">
+
+  <input type="text" ng-model="busq1" auto-focus placeholder="Buscar..." class="form-control input-sm"
+
+  style="max-width:250px; margin: 0 10px">
+
+
+
+  <select name="cod_pais1" ng-model="filtros.cod_pais1" ng-change="cargarDataFiltrada()"
+
+    class="form-control input-sm"
+
+    style="max-width:150px;display:inline-block;"
+
+    title="País de Origen">
+
+    <option value="">- Origen -</option>
+
+    <option ng-repeat="a in lista_paises_origen" value="{{a.codigo}}">{{a.nombre}}</option>
+
+  </select>
+
+  &nbsp;
+
+<!--TODO. reemplazar esta flecha por una imagen, o algo mas decente, un icono-->
+
+&nbsp;<span style="font-size: 2em; color: blue">&nbsp;<i class="fas fa-caret-right"></i></span> <!-- icon flecha derecha -->
+
+<!--span style="font-size: 2em; color: gray"> => </span-->
+  &nbsp;&nbsp;
+
+
+
+
+
+<!--TODO. habilitar este select cuando se vayan a usar otros paises como destino, ademàs de VZLA
+borrando el atributo disabled="true"-->    
+
+<select name="cod_pais2" ng-model="filtros.cod_pais2" ng-change="cargarDataFiltrada()" disabled="true" 
+
+      class="form-control input-sm"
+
+      style="max-width:150px;display:inline-block;"
+
+      title="País Destino">
+
+      <option value="">-Destino-</option>
+
+      <option value="VEN">Venezuela</option>
+
+      <option ng-repeat="a in lista_paises" value="{{a.codigo}}">{{a.nombre}}</option>
+
+    </select>
+
+<!--
+
+  <span style="font-weight:bold; margin-left:20px">Estatus:<span>
+
+-->
+
+
+
+  <select name="status" ng-model="filtros.status"
+
+  ng-change="selectedStatus();cargarDataFiltrada()"
+
+  class="form-control input-sm" 
+
+  style="max-width:200px; display:inline-block;">
+
+    <option value="">-Estatus-</option>
+
+    <option value="New">Nueva</option>
+
+    <option value="PO">En curso - Origen</option>
+
+    <option value="PD">En curso - Destino</option>
+
+    <!--option value="PO">En Proceso - Origen</option>
+
+    <option value="PD">En Proceso - Destino</option-->
+
+    <option value="FIN">Completada</option>
+
+    <option value="CANC">Cancelada</option>
+
+  <!--
+
+    <option value="New">Cancelada por usuario</option>
+
+    <option value="New">Cancelada por operador</option>
+
+    <option ng-repeat="a in lista_est" value="{{a.codigo}}">{{a.nombre}}</option>
+
+  -->
+
+  </select>
+
+  <select name="year" ng-model="filtros.year"
+    ng-change="cargarDataFiltrada()"
+    class="form-control input-sm" 
+    style="max-width:120px; display:inline-block;">
+    <option value="">-Año-</option>
+    <option value="2021">2021</option>
+    <option value="2022">2022</option>
+    <option value="2023">2023</option>
+    <option value="2024">2024</option>
+  </select>
+
+  <select name="mes" ng-model="filtros.month"
+    ng-change="cargarDataFiltrada()"
+    class   = "form-control input-sm" 
+    style   = "max-width:120px; display:inline-block;"
+    ng-if   = "filtros.year != '' "
+    ng-hide = "filtros.year == '' ">
+    <option value="">-Mes-</option>
+    <option value="1">Ene</option>
+    <option value="2">Feb</option>
+    <option value="3">Mar</option>
+    <option value="4">Abr</option>
+    <option value="5">May</option>
+    <option value="6">Jun</option>
+    <option value="7">Jul</option>
+    <option value="8">Ago</option>
+    <option value="9">Sep</option>
+    <option value="10">Oct</option>
+    <option value="11">Nov</option>
+    <option value="12">Dic</option>
+  </select>
+
+
+  <!--filtro pago destino: pendiente / realizado-->
+
+<div class="d-flex flex-row-reverse bd-highlight">
+
+
+
+  <!--div class="p-2 bd-highlight">
+
+
+    <a ng-if="mostrarFiltroPD"
+
+     title="Estatus de Pago destino por parte del operador (realizado o pendiente)"
+
+     class="btn btn-sm pull-right" style="color: white"
+
+     ng-class="{true: 'btn-success', false: 'btn-danger'}[pago2_status]"
+
+     ng-click="cargarDataFiltrada(2);">
+
+     Pago Destino {{pago2_status && 'Verificado' || 'Realizado'}}
+
+  </a>
+
+  </div-->
+
+
+
+  <!--filtro verificacion pago origen // pago1_status = !pago1_status; -->
+  <!--div class="p-2 bd-highlight">
+
+
+  <a 
+
+   ng-if="mostrarFiltroPO"
+
+   title="Estatus de verificación pago en origen por parte del operador"
+
+   class="btn btn-sm pull-right" style="color: white"
+
+   ng-class="{true: 'btn-info', false: 'btn-warning'}[pago1_status]"
+
+   ng-click="cargarDataFiltrada(1);">
+
+   Pago Origen {{pago1_status && 'Verificado' || 'No Verificado'}}
+
+</a>
+
+</div-->
+
+
+<div class="p-2 bd-highlight">
+  <!--boton para reset filtros-->
+  <button type="button" class="btn btn-light" ng-click="onInit();" ng-show="filtros.status!=''" title="Limpiar todos los filtros">Quitar Filtros</button>
+</div>
+
+</div>
+
+
+</div>
+
+
+<!--version anterior
+
+  <a title="Limpiar todos los filtros"
+
+   class="btn btn-sm badge badge-dark"
+
+   ng-click="onInit();">Limpiar filtros
+
+</a>
+
+-->
+
+
+<!--fin filtros-->
+
+
+
+<div style="padding: 5px">
+
+  <p>
+
+<!--data, listado de resultados-->
+
+<table width="75%" class="table table-sm table-hover" ng-if="resultados.length > 0">
+
+  <thead class="thead-light">
+
+    <!--
+
+  	<tr class="table-active">
+
+      <th colspan="8">Filtros</th>
+
+      <th colspan="3" style="text-align:center; color: orange; background-color: #17a2b8">Acciones</th>
+
+	 </tr>
+
+   -->
+
+  <tr>
+
+    <!--TODO. agrupar estas columnas en las filas, tipo lista, una arriba de otra, o colocar botones que se ocultan dependiendo del status de la transacciones-->
+
+    <th style="width:10%">Pais origen</th>
+
+    <th style="width:10%;text-align:right">Monto US$</th>
+
+    <th style="width:10%;text-align:center" colspan="2" style="text-align:right">Monto/Origen</th>
+
+    <th style="width:10%;text-align:center" colspan="2" style="text-align:right">Monto/Destino</th>
+
+    <th style="width:10%;text-align:center" style="text-align:right"># Transacciones</th>
+
+    <th style="width:10%;text-align:center;">Promedio US$</th>
+    <th style="width:10%;text-align:center">Promedio Origen</th>
+    <th style="text-align:center">Promedio Destino</th>
+    <!--th style="text-align:right;" style="text-align:right">Promedio Destino</th-->
+
+    <!--th>Referencia</th>
+
+    <th>Fecha/Hora</th>
+
+	  <th style="width:6%">Usuario</th>
+
+    <th>Estatus</th>
+
+    <th style="text-align:center">Pago Origen</th>
+
+    <th style="text-align:center">Pago Destino</th>
+
+    -->
+
+  </tr>
+
+  </thead>
+
+  <tbody>
+
+  <tr ng-repeat="x in resultados | filter:busq1">
+
+    <!--indice numero fila-->
+
+    <!--TODO. EVALUAR. mejor mostrar el id del registro en la tabla-->
+
+    <!--td>{{$index+1}}</td!-->
+
+
+
+    
+
+    <!--TODO. IDEA. rellenar el codigo de referencia con ceros, o con codigo de pais origen y destino-->
+
+    <td><a title="Ver detalles del pais"
+
+      href="#!/transacc/{{x.id}}">{{x.origen_codpais}}</a>
+
+
+      <!--boton para ver todas las transacciones de un usuario (filtro): puede llevar a lista de las transacciones de un pais-->
+
+       <button type="button" class="btn btn-primary"
+
+       title="Listar todas las transacciones realizadas desde {{ x.origen_codpais }}"
+
+       ng-click="listByUser(x.login)">
+
+        <i class="fas fa-search"></i>
+
+      </button>
+    </td>
+
+
+    <!--TODO. activar, traer del query.
+    <td><a title="Ver detalles del pais"
+
+      href="#!/transacc/{{x.id}}">{{x.destino_codpais}}</a></td-->
+
+    <!--dejar campo fecha para usar rangos-->
+
+    <!--td><a title="Ver detalles de la transacion (pendiente terminar)"
+
+      href="#!/transacc/{{x.id}}">{{x.date_created | date:'medium' }}</a></td-->
+
+
+
+    <!--montos-->
+
+    <td style="text-align:right"><span style="color:green">
+
+      {{ x.monto_dolares | number: 0}}</span><!--aqui debe ir el simbolo de la moneda, y no el pais--></td>
+
+
+
+    <td style="text-align:right"><span style="color:green">
+
+      {{ x.origen_monto | number: 0.00}}</span><!--aqui deberia ir el simbolo de la moneda, y no el pais--></td>
+
+
+    <!--TODO. mostrar nombre de la moneda origen en vez del pais.
+      o mejor: mostrar nombre de moneda en vez de pais-->
+
+    <td><a target="_BLANK" href="#!/pais/{{ x.origen_codpais }}">{{ x.origen_codpais }}</a></td>
+
+
+
+    <td style="text-align:right; color:green">{{ x.destino_monto | number: 0.00}}</td> <!--aqui debe ir el simbolo de la moneda, y no el pais-->
+
+    <!--TODO. mostrar nombre de la moneda destino en vez del pais.
+      o mejor: mostrar nombre de moneda en vez de pais-->
+    <td><a target="_BLANK" href="#!/pais/{{ x.destino_codpais }}">{{ x.destino_codpais}}</a></td>
+
+
+    <td style="text-align:center; color:green"><a target="_BLANK" title="Nro. total de transacciones desde {{ x.origen_codpais }} hacia {{ x.destino_codpais }}">{{ x.count_transacc}}</a></td>
+    
+    <!--montos promedio-->
+    <td style="text-align:center; color:green">{{ (x.monto_dolares / x.count_transacc) | number: 0.2 }}</td> 
+    <td style="text-align:center; color:green">{{ (x.origen_monto / x.count_transacc)  | number: 0 }}</td> 
+    <td style="text-align:center; color:green">{{ (x.destino_monto / x.count_transacc)  | number: 0 }}</td> 
+
+
+    <!--status-->
+
+      <!--td>
+
+        <a
+
+        ng-if="x.status == 'New'"
+
+        class="text text-secondary bg-warning"
+
+        title="Acciones: enviar datos de pago al cliente, comunicarse con el cliente, dar instrucciones de cómo pagar, esperar su confirmación de pago"
+
+        href="#!/chat/{{ x.id }}">Nueva</a>
+
+
+        <span class="text-warning"     
+
+        ng-if="x.status == 'PO'">P.O.</span>
+
+
+        <span class="text-danger"
+
+        ng-if="x.status == 'PD'">P.D.</span>
+
+
+
+        <span class="text text-success" 
+
+        ng-if="x.status == 'FIN'">Completado</span>
+
+        
+        <span class="badge badge-pill badge-primary"   
+
+        ng-if="x.status == 'PD'">Pago Destino</span>
+
+
+        <span class="badge badge-pill badge-success"   
+
+        ng-if="x.status == 'FIN'">FINALIZADA</span>
+
+
+        <span class="badge badge-pill badge-dark"      
+
+        ng-if="x.status == 'CC'" title="Cancelada por el cliente">Cancelada</span>
+
+
+
+        <span class="badge badge-pill badge-dark"      
+
+        ng-if="x.status == 'CO'" title="Cancelada por operador">Cancelada</span>
+
+
+
+        <span class="badge badge-pill badge-dark"      
+
+        ng-if="x.status == 'CA'" title="Cancelada por administrador de la plataforma">Cancelada</span>
+
+      </td-->
+
+
+
+    <!--pago origen-->
+
+    <!--td style="text-align:center">
+
+      <span
+
+      ng-if="x.status_PO == ''"
+
+      class="text-gray"
+
+      href="#!/chat/{{ x.id }}"
+
+      title="Esperando que el cliente notifique su pago">En espera</span>
+
+
+
+      <a ng-if="x.status_PO == 'A'"
+
+      class="badge badge-pill badge-warning text-gray" role="button"
+
+      title="Comprobar el pago del cliente en la moneda de origen, segun el medio de pago especificado"
+
+      href="#!/chat/{{ x.id }}">Verificar</a>
+
+
+      <span ng-if="x.status_PO == 'OK'"
+
+      class="text-primary"
+
+      title="Pago del cliente verificado por operador. Al hacer click muestra datos del pago: Fecha, forma de pago, etc. "
+
+      href="#" >Verificado</span>
+
+    </td-->
+
+
+
+
+
+<!--pago destino-->
+
+
+    <!--td style="text-align:center">
+
+      <a
+
+      ng-if="x.status_PO == 'OK' && x.status_PD == '' " 
+
+      class="badge badge-pill badge-danger text-white" role="button"
+
+      href="#!/chat/{{ x.id }}" 
+
+      title="Pendiente por pagar. El operador debe realizar el pago y notificarlo">Pagar</a>
+
+
+      <span 
+
+      ng-if="x.status_PO == 'OK' && x.status_PD == 'A'" 
+
+      title="Pago a destino realizado por operador" 
+
+      class="text-primary" 
+
+      href="#" >Pagado</span>
+
+
+      <span 
+
+      ng-if="x.status_PD == 'OK'" 
+
+      class="text-success" 
+
+      href="#" 
+
+      title="Pago en destino Verificado por el Cliente">Confirmado por Cliente</span>
+
+
+      <span 
+
+      ng-if="x.status_PO != 'OK'" 
+
+      title="Se requiere pago en origen confirmado para habilitar pago a destino"
+
+      class="badge badge-pill badge-light pointer" 
+
+      style="text-align:center">X</span>
+
+
+    </td-->
+
+
+
+
+
+
+
+<!--detalles-->
+
+<!--
+
+    <td style="text-align:center"><a href="#!/transacc/{{x.id}}">Ver</a></td>
+
+  -->
+
+    <!--TODO. analizar cuando usar target="_BLANK"-->
+
+    <!--TODO, colocar link para eliminar-->
+
+    <!--
+
+    <td><a title="Ver perfil completo de usuario" href="#!/user/{{ x.login }}">Ver + detalles</a></td>
+
+  -->
+
+  </tr>
+
+  </tbody>
+
+</table>
+
+
+
+<div >
+
+  <h3 ng-if="resultados.length <= 0"><span class="text-danger">No hay resultados para tu búsqueda</span></h3>
+
+  <h3 ng-if="resultados.length >= 1"> <span class="text-secondary">Resultados de la búsqueda: {{resultados.length}}</span></h3>
+  <br><br>
+
+</div>
+
+
+
+<!--TODO. finalizar. mostrar cantidad acorde al filtro
+
+<div ng-if="resultados.length>0">
+
+  <h3><span class="text-secondary">Resultados de la búsqueda: {{resultados.length}}</span></h3>
+
+  <br><br>
+
+</div>
+
+-->
+
+
+
+
+
+</p>
+
+</div>
+
+
+
+<!--DEBUG
+
+<br>
+
+<b>DEBUG</b>
+
+</pre>condicion: {{condicionWhere}}</pre> <br>
+
+<pre>FILTROS: {{filtros|json}}</pre>
+
+<pre>resultados: {{resultados|json}}</pre>
+
+<pre>sql: {{resultados.sql|json}}</pre>
+
+</div>
+
+DEBUG/END-->
+
+
+
+<!--
+
+  <a title="Agregar registro" href="#!/user/new">Agregar</a>
+
+    <td><a title="Ver detalles" href="#!/user/?login={{ x.login }}">{{ x.nombre }}</a></td>
+
+    <td><a title="Enviar mensaje" href="#!/user/?login={{ x.login }}">{{ x.email }}</a></td>
+
+    <td><a href="#!/user/{{ x.login }}">Ver más detalles</a></td>
+
+-->
+
+
+
+    <!--TODO. agregar datos y hacer link a datos por pais y ciudad
+
+    <td><a title="(+) Listar usuarios de este pais" href="#!/user/">{{ x.pais }}</a></td>
+
+    <td><a title="(+) Listar usuarios de esta ciudad" href="#!/user/">{{ x.ciudad }}</a></td>
+
+    -->
+

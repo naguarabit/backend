@@ -72,6 +72,8 @@ angular.module('myApp', [
 
   ,'myApp.stats'
 
+  ,'myApp.comisiones'
+
   //,'ui.bootstrap.demo'
 
 ])
