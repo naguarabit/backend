@@ -9,11 +9,11 @@ angular.module('myApp.comisiones', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
 
-  $routeProvider.when('/stats', {
+  $routeProvider.when('/comisiones', {
 
-    templateUrl: 'stats/list.html',
+    templateUrl: 'comisiones/list.html',
 
-    controller: 'ctrlStats'
+    controller: 'ctrlComisiones'
 
   });
 
@@ -65,7 +65,7 @@ angular.module('myApp.comisiones', ['ngRoute'])
 
 //TODO. agregar opciones de ordenamiento a columnas
 
-.controller('ctrlStats', ['$scope', '$http', function($scope, $http) {
+.controller('ctrlComisiones', ['$scope', '$http', function($scope, $http) {
 
 
 
@@ -691,7 +691,7 @@ $scope.cargarDataFiltrada = function(){
   //funcion llamada al inicio de la pantalla
   $scope.onInit();
 
-  //$scope.saludo = "Saludo desde ctrl";
+  //$scope.saludo = "Saludo desde ctrl Comisiones";
 
 
 
