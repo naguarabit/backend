@@ -666,7 +666,35 @@ $scope.cargarDataFiltrada = function(){
   
       console.log('controlador:calc. funcion: cargarPaisesOrigen. end');
   
-    };
+    };//cargarPaisesOrigen-end
+
+
+    //carga lista de operadores para poblar el select widget
+    $scope.cargarListaOperadores = function () {
+
+      console.log('controlador:calc. funcion: cargarListaOperadores. start');
+  
+      $http.get("./operadores/list_short.php")
+  
+      .then(function (response) {
+  
+        $scope.lista_operadores = response.data.records;
+  
+        console.log($scope.lista_paises_origen);
+  
+      },
+  
+      function(data, status) {
+  
+        console.error('Error en SERVICIO de consulta de cargarListaOperadores. ', status, data);
+  
+        $scope.msg = "Error consultando datos: SERVICIO de consulta de cargarListaOperadores";
+  
+      })
+  
+      console.log('controlador:calc. funcion: cargarListaOperadores. end');
+  
+    };//cargarPaisesOrigen-end
 
 
 
@@ -683,6 +711,8 @@ $scope.cargarDataFiltrada = function(){
     $scope.cargarPaisesOrigen();
 
     $scope.cargarPaisesDestino();
+
+    $scope.cargarListaOperadores();
 
     console.log('controlador -transacciones- fin');
 
