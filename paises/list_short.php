@@ -1,8 +1,8 @@
 <?php
 /*
-users.php
-2019-07-12
-using customers.php from example in https://www.w3schools.com/angular/angular_sql.asp
+paises/list_short.php
+example
+https://www.naguarabit.com/backend/paises/list_short.php
 */
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
