@@ -2553,7 +2553,7 @@ angular.module('myApp.calcUser', ['ngRoute']) //TODO. test: ,'ngStorage'
 
   //porc comision remesa
 
-  $scope.porc_comision = 6.0;
+  $scope.porc_comision = 10.0;
 
   $scope.tasa_USD_Bs_final = 0;
 
