@@ -439,7 +439,7 @@ $scope.getAllData = function(){
 
         $scope.mostrarFiltroPD = false;
 
-   };
+   };//selectedStatus-end
 
 
 
@@ -638,7 +638,7 @@ $scope.selectedMonth = function(){
 
     console.log('controlador -transacciones-getDataFiltrada.fin');
 
-  };//cargarDataFiltrada
+  };//cargarDataFiltrada-end
 
 
 
@@ -730,6 +730,33 @@ $scope.selectedMonth = function(){
 
   };
 
+    //carga lista de paises para poblar el select
+
+    $scope.cargarPaisesOrigen = function () {
+
+      console.log('controlador:calc. funcion: cargarPaisesOrigen. start');
+  
+      $http.get("./paises/list_short_origen.php")
+  
+      .then(function (response) {
+  
+        $scope.lista_paises_origen = response.data.records;
+  
+        console.log($scope.lista_paises_origen);
+  
+      },
+  
+      function(data, status) {
+  
+        console.error('Error en SERVICIO de consulta de cargar lista Paises de origen. ', status, data);
+  
+        $scope.msg = "Error consultando datos: SERVICIO de consulta de cargar lista Paises de origen";
+  
+      })
+  
+      console.log('controlador:calc. funcion: cargarPaisesOrigen. end');
+  
+    };
 
 
 
@@ -742,6 +769,8 @@ $scope.selectedMonth = function(){
     $scope.initFiltros();
 
     $scope.getAllData();
+
+    $scope.cargarPaisesOrigen();
 
     $scope.cargarPaises();
 
