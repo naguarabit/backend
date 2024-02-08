@@ -117,10 +117,10 @@ borrando el atributo disabled="true"-->
 
   <select name="mes" ng-model="filtros.month"
     ng-change="cargarDataFiltrada()"
-    class="form-control input-sm" 
-    style="max-width:120px; display:inline-block;"
-    ng-show="filtros.year != '' "
-    ng-hide="filtros.year == '' ">
+    class   = "form-control input-sm" 
+    style   = "max-width:120px; display:inline-block;"
+    ng-if   = "filtros.year != '' "
+    ng-hide = "filtros.year == '' ">
     <option value="">-Mes-</option>
     <option value="1">Ene</option>
     <option value="2">Feb</option>
