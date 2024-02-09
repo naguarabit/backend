@@ -674,13 +674,13 @@ $scope.cargarDataFiltrada = function(){
 
       console.log('controlador:calc. funcion: cargarListaOperadores. start');
   
-      $http.get("./operadores/list_short.php")
+      $http.get("./operador/list_short.php")
   
       .then(function (response) {
   
         $scope.lista_operadores = response.data.records;
   
-        console.log($scope.lista_paises_origen);
+        console.log($scope.lista_operadores);
   
       },
   
@@ -694,7 +694,7 @@ $scope.cargarDataFiltrada = function(){
   
       console.log('controlador:calc. funcion: cargarListaOperadores. end');
   
-    };//cargarPaisesOrigen-end
+    };//cargarListaOperadores-end
 
 
 

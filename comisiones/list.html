@@ -136,6 +136,14 @@ borrando el atributo disabled="true"-->
     <option value="12">Dic</option>
   </select>
 
+  <select name="operador" ng-model="filtros.operador"
+    ng-change="cargarDataFiltrada()"
+    class   = "form-control input-sm" 
+    style   = "max-width:150px; display:inline-block;">
+    <option value="">-Operador-</option>
+    <option ng-repeat="a in lista_operadores" value="{{a.login}}">{{a.nombre}}</option>
+  </select>    
+
 
   <!--filtro pago destino: pendiente / realizado-->
 
@@ -251,9 +259,13 @@ borrando el atributo disabled="true"-->
 
     <th style="width:10%;text-align:center" style="text-align:right"># Transacciones</th>
 
+    <th style="width:10%;text-align:center;">Total US$</th>
     <th style="width:10%;text-align:center;">Promedio US$</th>
-    <th style="width:10%;text-align:center">Promedio Origen</th>
-    <th style="text-align:center">Promedio Destino</th>
+    <!--th style="width:10%;text-align:center">Promedio Origen</th-->
+    <!--th style="text-align:center">Promedio Destino</th-->
+    
+    <th style="text-align:center">Operador Login</th>
+    <th style="text-align:center">Fecha ultimo pago</th>
     <!--th style="text-align:right;" style="text-align:right">Promedio Destino</th-->
 
     <!--th>Referencia</th>
@@ -352,10 +364,11 @@ borrando el atributo disabled="true"-->
     <td style="text-align:center; color:green"><a target="_BLANK" title="Nro. total de transacciones desde {{ x.origen_codpais }} hacia {{ x.destino_codpais }}">{{ x.count_transacc}}</a></td>
     
     <!--montos promedio-->
+    <td style="text-align:center; color:green">{{ x.monto_dolares | number: 0.2 }}</td> 
     <td style="text-align:center; color:green">{{ (x.monto_dolares / x.count_transacc) | number: 0.2 }}</td> 
-    <td style="text-align:center; color:green">{{ (x.origen_monto / x.count_transacc)  | number: 0 }}</td> 
-    <td style="text-align:center; color:green">{{ (x.destino_monto / x.count_transacc)  | number: 0 }}</td> 
 
+    <td style="text-align:center; color:green">NOMBRE OPERADOR</td> 
+    <td style="text-align:center; color:green">FECHA ULTIMO PAGO</td> 
 
     <!--status-->
 
