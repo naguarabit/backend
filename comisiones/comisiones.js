@@ -2,18 +2,18 @@
 
 
 
-angular.module('myApp.stats', ['ngRoute'])
+angular.module('myApp.comisiones', ['ngRoute'])
 
 
 //enrutamiento a lista de estadistica
 
 .config(['$routeProvider', function($routeProvider) {
 
-  $routeProvider.when('/stats', {
+  $routeProvider.when('/comisiones', {
 
-    templateUrl: 'stats/list.html',
+    templateUrl: 'comisiones/list.html',
 
-    controller: 'ctrlStats'
+    controller: 'ctrlComisiones'
 
   });
 
@@ -65,7 +65,7 @@ angular.module('myApp.stats', ['ngRoute'])
 
 //TODO. agregar opciones de ordenamiento a columnas
 
-.controller('ctrlStats', ['$scope', '$http', function($scope, $http) {
+.controller('ctrlComisiones', ['$scope', '$http', function($scope, $http) {
 
 
 
@@ -666,7 +666,35 @@ $scope.cargarDataFiltrada = function(){
   
       console.log('controlador:calc. funcion: cargarPaisesOrigen. end');
   
-    };
+    };//cargarPaisesOrigen-end
+
+
+    //carga lista de operadores para poblar el select widget
+    $scope.cargarListaOperadores = function () {
+
+      console.log('controlador:calc. funcion: cargarListaOperadores. start');
+  
+      $http.get("./operador/list_short.php")
+  
+      .then(function (response) {
+  
+        $scope.lista_operadores = response.data.records;
+  
+        console.log($scope.lista_operadores);
+  
+      },
+  
+      function(data, status) {
+  
+        console.error('Error en SERVICIO de consulta de cargarListaOperadores. ', status, data);
+  
+        $scope.msg = "Error consultando datos: SERVICIO de consulta de cargarListaOperadores";
+  
+      })
+  
+      console.log('controlador:calc. funcion: cargarListaOperadores. end');
+  
+    };//cargarListaOperadores-end
 
 
 
@@ -684,6 +712,8 @@ $scope.cargarDataFiltrada = function(){
 
     $scope.cargarPaisesDestino();
 
+    $scope.cargarListaOperadores();
+
     console.log('controlador -transacciones- fin');
 
   };
@@ -691,7 +721,7 @@ $scope.cargarDataFiltrada = function(){
   //funcion llamada al inicio de la pantalla
   $scope.onInit();
 
-  //$scope.saludo = "Saludo desde ctrl";
+  //$scope.saludo = "Saludo desde ctrl Comisiones";
 
 
 

@@ -64,13 +64,13 @@ angular.module('myApp', [
   
   ,'myApp.chat'
 
-  ,'myApp.formapago' //list
-
-  ,'myApp.formapago' //crud
+  ,'myApp.formapago'
 
   ,'myApp.calcUser'
 
   ,'myApp.stats'
+
+  ,'myApp.comisiones'
 
   //,'ui.bootstrap.demo'
 
@@ -84,7 +84,7 @@ angular.module('myApp', [
 
 //ruta por defecto
 
-  $routeProvider.otherwise({redirectTo: '/inicio'});
+  $routeProvider.otherwise({redirectTo: '/stats/'});
 
 }])
 

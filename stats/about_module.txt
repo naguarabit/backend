@@ -1,1 +1,1 @@
-Stats is modulo de estadisticas, iniciado el 14.dic.2021
+Stats es el modulo estadisticas, iniciado el 14.dic.2021
