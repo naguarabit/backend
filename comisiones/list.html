@@ -251,21 +251,21 @@ borrando el atributo disabled="true"-->
 
     <th style="width:10%">Pais origen</th>
 
-    <th style="width:10%;text-align:right">Monto US$</th>
+    <!--th style="width:10%;text-align:right">Monto US$</th>
 
     <th style="width:10%;text-align:center" colspan="2" style="text-align:right">Monto/Origen</th>
 
-    <th style="width:10%;text-align:center" colspan="2" style="text-align:right">Monto/Destino</th>
+    <th style="width:10%;text-align:center" colspan="2" style="text-align:right">Monto/Destino</th-->
 
     <th style="width:10%;text-align:center" style="text-align:right"># Transacciones</th>
 
     <th style="width:10%;text-align:center;">Total US$</th>
     <th style="width:10%;text-align:center;">Promedio US$</th>
-    <!--th style="width:10%;text-align:center">Promedio Origen</th-->
-    <!--th style="text-align:center">Promedio Destino</th-->
+    <th style="width:10%;text-align:center">Comisiôn Origen</th>
+    <th style="text-align:center">Comisiôn Destino</th>
     
-    <th style="text-align:center">Operador Login</th>
-    <th style="text-align:center">Fecha ultimo pago</th>
+    <th style="text-align:center">Operador</th>
+    <th style="text-align:center">Fecha último pago</th>
     <!--th style="text-align:right;" style="text-align:right">Promedio Destino</th-->
 
     <!--th>Referencia</th>
@@ -336,37 +336,43 @@ borrando el atributo disabled="true"-->
 
     <!--montos-->
 
-    <td style="text-align:right"><span style="color:green">
+    <!--td style="text-align:right"><span style="color:green">
 
-      {{ x.monto_dolares | number: 0}}</span><!--aqui debe ir el simbolo de la moneda, y no el pais--></td>
+      {{ x.monto_dolares | number: 0}}</span--><!--aqui debe ir el simbolo de la moneda, y no el pais--></td>
 
 
 
-    <td style="text-align:right"><span style="color:green">
+    <!--td style="text-align:right"><span style="color:green">
 
-      {{ x.origen_monto | number: 0.00}}</span><!--aqui deberia ir el simbolo de la moneda, y no el pais--></td>
+      {{ x.origen_monto | number: 0.00}}</span--><!--aqui deberia ir el simbolo de la moneda, y no el pais--></td>
 
 
     <!--TODO. mostrar nombre de la moneda origen en vez del pais.
       o mejor: mostrar nombre de moneda en vez de pais-->
 
-    <td><a target="_BLANK" href="#!/pais/{{ x.origen_codpais }}">{{ x.origen_codpais }}</a></td>
+    <!--td><a target="_BLANK" href="#!/pais/{{ x.origen_codpais }}">{{ x.origen_codpais }}</a></td-->
 
 
-
-    <td style="text-align:right; color:green">{{ x.destino_monto | number: 0.00}}</td> <!--aqui debe ir el simbolo de la moneda, y no el pais-->
+    <!--TODO. borrar estas lineas comentadas-->
+    <!--td style="text-align:right; color:green">{{ x.destino_monto | number: 0.00}}</td-->
+    <!--TODO. aqui debe ir el simbolo de la moneda, y no el pais-->
 
     <!--TODO. mostrar nombre de la moneda destino en vez del pais.
       o mejor: mostrar nombre de moneda en vez de pais-->
-    <td><a target="_BLANK" href="#!/pais/{{ x.destino_codpais }}">{{ x.destino_codpais}}</a></td>
+    <!--td><a target="_BLANK" href="#!/pais/{{ x.destino_codpais }}">{{ x.destino_codpais}}</a></td-->
 
 
     <td style="text-align:center; color:green"><a target="_BLANK" title="Nro. total de transacciones desde {{ x.origen_codpais }} hacia {{ x.destino_codpais }}">{{ x.count_transacc}}</a></td>
     
     <!--montos promedio-->
-    <td style="text-align:center; color:green">{{ x.monto_dolares | number: 0.2 }}</td> 
-    <td style="text-align:center; color:green">{{ (x.monto_dolares / x.count_transacc) | number: 0.2 }}</td> 
+    <td style="text-align:center; color:green">{{ x.monto_dolares | number: 1.1 }}</td> 
+    <td style="text-align:center; color:green">{{ (x.monto_dolares / x.count_transacc) | number: 1.1 }}</td> 
 
+    <!--montos comisiones-->
+    <td style="text-align:center; color:green">{{ 0 | number: 1.1 }}</td> 
+    <td style="text-align:center; color:green">{{ 0 | number: 1.1 }}</td> 
+
+    <!--datos de operador-->
     <td style="text-align:center; color:green">{{ x.operador_login}}</td> 
     <td style="text-align:center; color:green">{{ x.last_payment}}</td> 
 
