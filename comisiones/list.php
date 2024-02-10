@@ -26,16 +26,21 @@ $where = ""; //condiciones...
 
 
 
-$sql="SELECT a.origen_codpais, a.destino_codpais"
-.", sum(a.monto_dolares) as monto_dolares"
-.", sum(a.origen_monto) as origen_monto"
-.", sum(a.destino_monto) as destino_monto"
-.", count(a.id) as count_transacc"
-."  FROM transacciones a LEFT JOIN user u USING (login)"
+$sql="SELECT o.user_id as operador_user_id, o.login as operador_login, o.nombre as operador_nombre
+, coalesce(DATE_FORMAT(o.last_payment, '%d/%m/%Y'), '-') AS last_payment
+, a.origen_codpais, a.destino_codpais
+, sum(a.monto_dolares) as monto_dolares
+, sum(a.origen_monto) as origen_monto
+, sum(a.destino_monto) as destino_monto
+, count(a.id) as count_transacc
+FROM operador_transaccion ot
+INNER JOIN operadores    o ON o.id = ot.operador_id
+INNER JOIN transacciones a ON a.id = ot.transaccion_id
+LEFT JOIN user u ON u.login=a.login"
 //.$where
-." WHERE a.activo=1"
-." GROUP BY a.origen_codpais"
-." ORDER BY a.origen_codpais";
+." WHERE a.activo=1 AND ot.activo=1 AND o.activo=1
+GROUP BY ot.operador_id
+ORDER BY ot.operador_id";
 
 $result = $conn->query($sql);
 
@@ -55,30 +60,9 @@ while($rs = $result->fetch_array(MYSQLI_ASSOC)) {
 
   $outp .= '{';
 
-  /*
-  $outp .= '"id":"'     		       . $rs["id"]  	         .'"';
-
-  $outp .= ',"referencia":"'        . $rs["referencia"]     .'"'; //la referencia es de 5 caracteres, formado por el id con ceros a la izq
-
-  $outp .= ',"login":"'  		       . $rs["login"] 	       .'"';
-
-  $outp .= ',"nombre":"' 		       . $rs["nombre"]	       .'"';
-
-
-  $outp .= ',"status":"'           . $rs["status"]         .'"';
-
-  $outp .= ',"status_PO":"'        . $rs["status_PO"]      .'"';
-
-  $outp .= ',"status_PD":"'        . $rs["status_PD"]      .'"';
-
-  $outp .= ',"date_created":"'     . $rs["date_created"]   .'"';
-
-
-  */
-
   $outp .= '"origen_codpais":"'   . $rs["origen_codpais"] .'"';
 
-  $outp .= ',"destino_codpais":"'  . $rs["destino_codpais"].'"';
+  $outp .= ',"destino_codpais":"'  . $rs["destino_codpais"] .'"';
 
   $outp .= ',"monto_dolares":'    . round($rs["monto_dolares"], 2)  .'';
 
@@ -88,7 +72,13 @@ while($rs = $result->fetch_array(MYSQLI_ASSOC)) {
 
   $outp .= ',"count_transacc":'   . $rs["count_transacc"]  .'';
 
-  $outp .= ',"sql":"'.$sql.'"';
+  $outp .= ',"operador_user_id":'   . $rs["operador_user_id"]  .'';
+
+  $outp .= ',"operador_login":"'   . $rs["operador_login"]  .'"';
+
+  $outp .= ',"operador_nombre":"'   . $rs["operador_nombre"]  .'"';
+
+  $outp .= ',"last_payment":"'       . $rs["last_payment"]  .'"';
 
   $outp .= '}';
 
@@ -98,6 +88,10 @@ while($rs = $result->fetch_array(MYSQLI_ASSOC)) {
 }
 
 $outp ='{"records":['.$outp.']}';
+/*
+$outp ='{"records":['.$outp.'],'
+     . '"sql":"'      . $sql .'"}';
+*/
 
 //TODO. manejar el error cuando no se consigue data
 
