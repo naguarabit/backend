@@ -33,14 +33,15 @@ $sql="SELECT o.user_id as operador_user_id, o.login as operador_login, o.nombre 
 , sum(a.origen_monto) as origen_monto
 , sum(a.destino_monto) as destino_monto
 , count(a.id) as count_transacc
-FROM operador_transaccion ot
-INNER JOIN operadores    o ON o.id = ot.operador_id
-INNER JOIN transacciones a ON a.id = ot.transaccion_id
-LEFT JOIN user u ON u.login=a.login"
+, round(sum(ot.monto_comision_dolares),2) as monto_comision_dolares"
+." FROM operador_transaccion ot"
+." INNER JOIN operadores    o ON o.id = ot.operador_id"
+." INNER JOIN transacciones a ON a.id = ot.transaccion_id"
+." LEFT JOIN user u ON u.login=a.login"
 //.$where
-." WHERE a.activo=1 AND ot.activo=1 AND o.activo=1
-GROUP BY ot.operador_id
-ORDER BY ot.operador_id";
+." WHERE a.activo=1 AND ot.activo=1 AND o.activo=1"
+." GROUP BY ot.operador_id"
+." ORDER BY ot.operador_id";
 
 $result = $conn->query($sql);
 
@@ -64,15 +65,17 @@ while($rs = $result->fetch_array(MYSQLI_ASSOC)) {
 
   $outp .= ',"destino_codpais":"'  . $rs["destino_codpais"] .'"';
 
-  $outp .= ',"monto_dolares":'    . round($rs["monto_dolares"], 2)  .'';
+  $outp .= ',"monto_dolares":'    . round($rs["monto_dolares"], 2);
 
-  $outp .= ',"origen_monto":'     . round($rs["origen_monto"], 0)  .'';
+  $outp .= ',"origen_monto":'     . round($rs["origen_monto"], 0);
 
-  $outp .= ',"destino_monto":'    . round($rs["destino_monto"],2)  .'';
+  $outp .= ',"destino_monto":'    . round($rs["destino_monto"],2);
 
-  $outp .= ',"count_transacc":'   . $rs["count_transacc"]  .'';
+  $outp .= ',"count_transacc":'   . $rs["count_transacc"];
 
-  $outp .= ',"operador_user_id":'   . $rs["operador_user_id"]  .'';
+  $outp .= ',"monto_comision_dolares":' . $rs["monto_comision_dolares"];
+
+  $outp .= ',"operador_user_id":'   . $rs["operador_user_id"];
 
   $outp .= ',"operador_login":"'   . $rs["operador_login"]  .'"';
 

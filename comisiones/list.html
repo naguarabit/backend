@@ -136,6 +136,7 @@ borrando el atributo disabled="true"-->
     <option value="12">Dic</option>
   </select>
 
+  <!--TODO. habilitar este filtro mas adelante, cuando haya mas de 5 operadores
   <select name="operador" ng-model="filtros.operador"
     ng-change="cargarDataFiltrada()"
     class   = "form-control input-sm" 
@@ -143,6 +144,7 @@ borrando el atributo disabled="true"-->
     <option value="">-Operador-</option>
     <option ng-repeat="o in lista_operadores" value="{{o.login}}">{{o.nombre}}</option>
   </select>    
+  -->
 
 
   <!--filtro pago destino: pendiente / realizado-->
@@ -372,7 +374,7 @@ borrando el atributo disabled="true"-->
     <!--montos comisiones-->
     <td style="text-align:center; color:green">{{ 10 | number: 1.1 }}</td> 
     <td style="text-align:center; color:green">{{ 15 | number: 1.1 }}</td> 
-    <td style="text-align:center; color:green">{{ 25 | number: 1.1 }}</td> 
+    <td style="text-align:center; color:green">{{ x.monto_comision_dolares | number: 1.1 }}</td> 
 
     <!--datos de operador-->
     <td style="text-align:center; color:green"><a href="#!/user/{{ x.operador_login }}">{{ x.operador_login}}</a></td> 
