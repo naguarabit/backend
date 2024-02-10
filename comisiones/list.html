@@ -367,8 +367,8 @@ borrando el atributo disabled="true"-->
     <td style="text-align:center; color:green">{{ x.monto_dolares | number: 0.2 }}</td> 
     <td style="text-align:center; color:green">{{ (x.monto_dolares / x.count_transacc) | number: 0.2 }}</td> 
 
-    <td style="text-align:center; color:green">NOMBRE OPERADOR</td> 
-    <td style="text-align:center; color:green">FECHA ULTIMO PAGO</td> 
+    <td style="text-align:center; color:green">{{ x.operador_login}}</td> 
+    <td style="text-align:center; color:green">{{ x.last_payment}}</td> 
 
     <!--status-->
 
