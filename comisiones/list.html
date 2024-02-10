@@ -141,7 +141,7 @@ borrando el atributo disabled="true"-->
     class   = "form-control input-sm" 
     style   = "max-width:150px; display:inline-block;">
     <option value="">-Operador-</option>
-    <option ng-repeat="a in lista_operadores" value="{{a.login}}">{{a.nombre}}</option>
+    <option ng-repeat="o in lista_operadores" value="{{o.login}}">{{o.nombre}}</option>
   </select>    
 
 
@@ -263,6 +263,7 @@ borrando el atributo disabled="true"-->
     <th style="width:10%;text-align:center;">Promedio US$</th>
     <th style="width:10%;text-align:center">Comisiôn Origen</th>
     <th style="text-align:center">Comisiôn Destino</th>
+    <th style="text-align:center">Comisiôn Total US$</th>
     
     <th style="text-align:center">Operador</th>
     <th style="text-align:center">Fecha último pago</th>
@@ -369,11 +370,12 @@ borrando el atributo disabled="true"-->
     <td style="text-align:center; color:green">{{ (x.monto_dolares / x.count_transacc) | number: 1.1 }}</td> 
 
     <!--montos comisiones-->
-    <td style="text-align:center; color:green">{{ 0 | number: 1.1 }}</td> 
-    <td style="text-align:center; color:green">{{ 0 | number: 1.1 }}</td> 
+    <td style="text-align:center; color:green">{{ 10 | number: 1.1 }}</td> 
+    <td style="text-align:center; color:green">{{ 15 | number: 1.1 }}</td> 
+    <td style="text-align:center; color:green">{{ 25 | number: 1.1 }}</td> 
 
     <!--datos de operador-->
-    <td style="text-align:center; color:green">{{ x.operador_login}}</td> 
+    <td style="text-align:center; color:green"><a href="#!/user/{{ x.operador_login }}">{{ x.operador_login}}</a></td> 
     <td style="text-align:center; color:green">{{ x.last_payment}}</td> 
 
     <!--status-->
