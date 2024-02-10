@@ -119,7 +119,7 @@ $scope.getAllData = function(){
 
 	   //devuelve lista de transacciones en formato json
 
-    $http.get("./stats/list.php")
+    $http.get("./comisiones/list.php")
 
     .then(function (response) {
 
@@ -576,7 +576,7 @@ $scope.cargarDataFiltrada = function(){
 
   //devuelve lista de transacciones, aplicando filtros
 
-   $http.get("./stats/list_filtrada.php?filtros=" + $scope.condicionWhere)
+   $http.get("./comisiones/list_filtrada.php?filtros=" + $scope.condicionWhere)
 
        .then(function (response) {
 
