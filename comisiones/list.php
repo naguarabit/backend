@@ -82,15 +82,15 @@ while($rs = $result->fetch_array(MYSQLI_ASSOC)) {
 
   $outp .= '}';
 
-
   //TODO. traer nombres de monedas en vez de paises
 
 }
 
-$outp ='{"records":['.$outp.']}';
-/*
-$outp ='{"records":['.$outp.'],'
-     . '"sql":"'      . $sql .'"}';
+$outp = '{"records":['.$outp.']}';
+
+/*experimento, devolver el sql como otro campo del json
+$outp = '{"records":['.$outp.']';
+$outp .= ',"sql":"'.$sql.'"}';
 */
 
 //TODO. manejar el error cuando no se consigue data

@@ -149,19 +149,21 @@ $scope.getAllData = function(){
 
     var cond = "", c1 = "", c2 = "", c3 = "", cc = "";
     var cyear = "", cmonth = "";
-    var cpais1 = "";
+    var cpais1 = "", cond_operador = "";
 
     if ($scope.filtros.status != ''){
 
       if ($scope.filtros.status == 'CANC'){
 
-        c1 = "status IN ('CANC','CA','CC','CO')"; //tipos de Cancelaciones, estan agrupadas en un solo status: CANCELADA
+        c1 = "a.status IN ('CANC','CA','CC','CO')"; //tipos de Cancelaciones, estan agrupadas en un solo status: CANCELADA
 
       }else{
 
-        c1 = "status:'" + $scope.filtros.status + "'";  //se usa el filtro que se ha seleccionado
+        c1 = "a.status:'" + $scope.filtros.status + "'";  //se usa el filtro que se ha seleccionado
 
       }
+
+      cond = c1;
 
     }else{
 
@@ -169,67 +171,13 @@ $scope.getAllData = function(){
 
     }
 
-    //TODO. revisar si comparar campos con '' es correcto, cuando value es null
-    
-     //pago origen
-     if ($scope.pago1_status && true){ //verificado
-
-      //c2 = "status:PO&"; //posiblemente agregar combinacion con campo status
-
-      c2 = "status_PO:'OK'"; //pago origen verificado por cliente
-
-     } else {
-
-      //TODO. falta filtro de pago origen realizado
-
-        c2 = "(status_PO:'A'.OR.status_PO:'')"; //pago origen pendiente por verificar, o pendiente por parte del cliente
-
-      //c2 = "status_PO:'A'"; //pago origen pendiente
-
-      //SI FUNCIONA
-
-      //c2 = "status_PO:''"; //pago origen pendiente
-
-     }
-
-
-     //debugger;
-     //pago destino. no se usa en las estadisticas
-     /*
-     if ($scope.pago2_status == true){//PD verificado
-
-       //version1:
-       //c3 = "status_PD:'A'.OR.status_PD:'OK'"; //pago destino realizado o confirmado
-
-       c3 = "status_PD:'OK'"; //pago destino confirmado
-
-     }else{
-
-       //version1:
-       //c3 = "status_PD:''";//pago destino pendiente
-       //duda: status_PD:'A' o blanco?
-       
-       c3 = "status_PD:'A'"; //pago destino realizado
-     }
-     */
-
-    //changing conditions, 09.dic.2021
-    
+    //TODO. revisar esta condicion, ya que parece chocar con c1
     //condicion not cancelled
-    cc    = "status NOT IN ('CANC','CA','CC','CO')";
+    cc    = "a.status NOT IN ('CANC','CA','CC','CO')";
     
-    console.log('c1: '+ c1);
-    console.log('c2: '+ c2);
-    console.log('c3: '+ c3);
-    console.log('cc: '+ cc);
-    console.log('cyear: '+ cyear);
-    console.log('cmonth: '+ cmonth);
+    //Start-formar la condicion completa
 
-
-    //formar la condicion completa
-
-    cond = c1;
-
+    /*TODO. evaluar borrar estos bloques de condiciones
     if ($scope.mostrarFiltroPO ==true){
       //la interfaz esta mostrando el filtro de PAGO ORIGEN
       cond = (cond=="" ? cc : cond+".AND."+cc); //add:no mostrar las canceladas
@@ -245,11 +193,10 @@ $scope.getAllData = function(){
       cond = (cond=="" ? c3 : cond+".AND."+c3); //add: filtrar estatus='PD'y no mostrar las canceladas
 
     }
+    */
 
     if ($scope.mostrarFiltroYear ==true){//el usuario selecciono un año para filtrar
-
       cond = (cond == "" ? cc : cond + ".AND." + cc); //add: no mostrar las canceladas
-      
     }
 
     if ($scope.mostrarFiltroMonth ==true){//el usuario selecciono un mes para filtrar
@@ -289,51 +236,34 @@ $scope.getAllData = function(){
     if (cpais1 != "")
       cond = (cond == "" ? cpais1 : cond + ".AND." + cpais1);
 
-      //*DEBUG
+    //TODO. descomentar bloque
+    if ($scope.filtros.operador && $scope.filtros.operador!=null){
+      cond_operador = "o.login='" + $scope.filtros.operador.trim() + "' ";
+    }
+      
+    //agregar filtros a la condicion, con/sin AND
+    if (cyear != "")
+      cond = (cond == "" ? cyear : cond + ".AND." + cyear);
+      
+    if (cmonth != "")
+      cond = (cond == "" ? cmonth : cond + ".AND." + cmonth);
+      
+    if (cond_operador != "")
+      cond = (cond == "" ? cond_operador : cond + ".AND." + cond_operador);
+    /**/
+
+    //end-formar la condicion completa
+
+    console.log('c1: '+ c1);
+    console.log('c2: '+ c2);
+    console.log('c3: '+ c3);
+    console.log('cc: '+ cc);
+    console.log('cyear: '+ cyear);
+    console.log('cmonth: '+ cmonth);    
+    console.log('cond_operador: '+ cond_operador);
+
+    //*DEBUG
     console.log('condicion aplicada string (no es sql): '+ cond);
-
-/**/
-    //final: c1 + ".AND." + c2 + ".AND." + c3; pero sin AND para c2 o para c3
-/*
-    cond = c1; //sin importar si c1 sea blanco o no
-
-    var condB = ""; //union de c2 y c3
-
-    //formar la condicion completa
-
-    if (c2 =""){
-
-      condB = c3;
-
-    }else if (c3 !=""){
-
-      condB = c2 . ".AND." . c2;
-
-    } 
-
-    && c3 !=""){
-
-    }
-
-    if (cond!=""){
-
-    }
-
-    if (c3!=""){
-
-      cond += ".AND." + c3;
-
-    }
-
-    if (cond !=)
-
-    cond = c1 + condB;
-*/
-
-
-
-
-  
 
 /*
 
@@ -362,70 +292,15 @@ $scope.getAllData = function(){
 
 
 
-  //function que se llama cuando se selecciona filtro de status 
-
-  //establece que botones de filtros mostrar que son excluyentes 
-
-   $scope.selectedStatus = function(){
-
-      //TODO. evaluar que filtros mostrar en estos casos
-
-      //$scope.filtros.status == ""
-
-      if($scope.filtros.status == 'FIN' || $scope.filtros.status == 'CANC'){
-
-        $scope.mostrarFiltroPO = false;
-
-        $scope.mostrarFiltroPD = false;
-
-        return;
-
-      }
-
-      if($scope.filtros.status == 'New'){
-
-        $scope.mostrarFiltroPO = false;
-
-        $scope.mostrarFiltroPD = false;
-
-        return;
-
-      };
-
-      
-
-      if($scope.filtros.status == 'PO')
-
-        $scope.mostrarFiltroPO = true;
-
-      else
-
-        $scope.mostrarFiltroPO = false;
-
-  
-
-      if($scope.filtros.status == 'PD')
-
-        $scope.mostrarFiltroPD = true;
-
-      else
-
-        $scope.mostrarFiltroPD = false;
-
-   };//selectedStatus-end
-
-
-
-
 
 //TODO. agregar filtro de login usuario, para usar la lupa del usuario.
 
-//TODO. agregar filtro año
-//TODO. agregar filtro de mes
+//TODO. doing. agregar filtro año
+//TODO. doing. agregar filtro de mes
 
 //function que se llama cuando se selecciona filtro de status 
 
-  //establece que botones de filtros mostrar que son excluyentes 
+//establece que botones de filtros mostrar que son excluyentes 
 
 $scope.selectedYear = function(){
   
@@ -441,11 +316,6 @@ $scope.selectedYear = function(){
 
   }
 
-}
-
-$scope.selectedMonth = function(){
-
-  
 }
 
 
@@ -536,7 +406,7 @@ $scope.cargarDataFiltrada = function(){
   
    //lista data aplicando filtros
 
-   $http.get("./status/list_filtrada.php?filtros=" + $scope.condicionWhere)
+   $http.get("./comisiones/list_filtrada.php?filtros=" + $scope.condicionWhere)
 
        .then(function (response) {
 

@@ -114,16 +114,25 @@ if ($filtros != ""){
 /*
 $sql = "SELECT a.*, CONCAT(a.origen_codpais,a.destino_codpais,LPAD(a.id, 4, '0')) AS refcompleta, LPAD(a.id, 4, '0') AS referencia, u.nombre from transacciones a INNER JOIN user u USING (login) ".$where." ORDER BY a.date_created DESC, a.login DESC";
 */
-$sql="SELECT a.origen_codpais, a.destino_codpais"
-.", sum(a.monto_dolares) as monto_dolares"
-.", sum(a.origen_monto) as origen_monto"
-.", sum(a.destino_monto) as destino_monto"
-.", count(a.id) as count_transacc"
-."  FROM transacciones a LEFT JOIN user u USING (login)"
+$sql="SELECT o.user_id as operador_user_id, o.login as operador_login, o.nombre as operador_nombre
+, coalesce(DATE_FORMAT(o.last_payment, '%d/%m/%Y'), '-') AS last_payment
+, a.origen_codpais, a.destino_codpais
+, round(sum(a.monto_dolares), 2) as monto_dolares
+, round(sum(a.origen_monto), 2) as origen_monto
+, round(sum(a.destino_monto), 2) as destino_monto
+, count(a.id) as count_transacc"
+." FROM operador_transaccion ot"
+." INNER JOIN operadores    o ON o.id = ot.operador_id"
+." INNER JOIN transacciones a ON a.id = ot.transaccion_id"
+." LEFT JOIN user u ON u.login=a.login"
+." WHERE a.activo=1 AND o.activo=1 AND ot.activo=1 "
 .$where
-//."AND a.activo=1"
-." GROUP BY a.origen_codpais"
-." ORDER BY a.origen_codpais";
+
+//DEBUG. prueba de filtro directo
+//." AND o.login='dianatorales'"
+
+." GROUP BY ot.operador_id"
+." ORDER BY ot.operador_id";
 
 
 
@@ -153,18 +162,15 @@ while($rs = $result->fetch_array(MYSQLI_ASSOC)) {
 
   $outp .= '{';
 
-  /*
-  $outp .= '"id":"'     		       . $rs["id"]  	         .'"';
+  $outp .= '"operador_user_id":'   . $rs["operador_user_id"]  .'';
 
-  $outp .= ',"login":"'  		       . $rs["login"] 	       .'"';
+  $outp .= ',"operador_login":"'   . $rs["operador_login"]  .'"';
 
-  $outp .= ',"referencia":"'       . $rs["referencia"]     .'"';
+  $outp .= ',"operador_nombre":"'   . $rs["operador_nombre"]  .'"';
 
-  $outp .= ',"nombre":"' 		       . $rs["nombre"]	       .'"';
+  $outp .= ',"last_payment":"'       . $rs["last_payment"]  .'"';
 
-  */
-
-  $outp .= '"origen_codpais":"'   . $rs["origen_codpais"] .'"';
+  $outp .= ',"origen_codpais":"'   . $rs["origen_codpais"] .'"';
 
   $outp .= ',"destino_codpais":"'  . $rs["destino_codpais"].'"';
 
@@ -176,51 +182,22 @@ while($rs = $result->fetch_array(MYSQLI_ASSOC)) {
 
   $outp .= ',"count_transacc":'   . $rs["count_transacc"]  .'';
 
-
-  /*
-
-  $outp .= ',"status":"'           . $rs["status"]         .'"';
-
-  $outp .= ',"status_PO":"'        . $rs["status_PO"]      .'"';
-
-  $outp .= ',"status_PD":"'        . $rs["status_PD"]      .'"';
-
-  $outp .= ',"date_created":"'     . $rs["date_created"]   .'"';
-
-  */
-
-
-
-
-
-
-  //EXPERIMENTO.DEBUG. retornar la cosulta sql como un campo dentro del json
-
-  $outp .= ',"sql":"'.$sql.'"';
-
-
-
   $outp .= '}';
 
 }
 
-
-
-
-
-//$outp ='{"records":['.$outp.']}';
-
 $outp ='{"records":['.$outp.']}';
+
+/*TODO. probar el EXPERIMENTO. retornar la cosulta sql como un campo dentro del json
+$outp = '{"records":['.$outp.']';
+$outp .= ',"sql":"'.$sql.'"}';
+*/
 
 //TODO. manejar el error cuando no se consigue data
 
 $conn->close();
 
-
-
 echo($outp);
-
-
 
 /*
 
