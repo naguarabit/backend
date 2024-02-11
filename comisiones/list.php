@@ -29,15 +29,15 @@ $where = ""; //condiciones...
 $sql="SELECT o.user_id as operador_user_id, o.login as operador_login, o.nombre as operador_nombre
 , coalesce(DATE_FORMAT(o.last_payment, '%d/%m/%Y'), '-') AS last_payment
 , a.origen_codpais, a.destino_codpais
-, sum(a.monto_dolares) as monto_dolares
-, sum(a.origen_monto) as origen_monto
-, sum(a.destino_monto) as destino_monto
 , count(a.id) as count_transacc
-, round(sum(ot.monto_comision_dolares),2) as monto_comision_dolares"
-." FROM operador_transaccion ot"
-." INNER JOIN operadores    o ON o.id = ot.operador_id"
-." INNER JOIN transacciones a ON a.id = ot.transaccion_id"
-." LEFT JOIN user u ON u.login=a.login"
+, sum(a.monto_dolares) as monto_dolares
+, round(sum(ot.monto_comision_dolares),2) as monto_comision_dolares
+,SUM(CASE WHEN operacion_tipo_origen = 1 THEN ot.monto_comision_dolares ELSE 0 END) AS total_origen_comision_dolares
+,SUM(CASE WHEN operacion_tipo_destino = 1 THEN ot.monto_comision_dolares ELSE 0 END) AS total_destino_comision_dolares
+FROM operador_transaccion ot
+INNER JOIN operadores    o ON o.id = ot.operador_id
+INNER JOIN transacciones a ON a.id = ot.transaccion_id
+LEFT JOIN user u ON u.login=a.login"
 //.$where
 ." WHERE a.activo=1 AND ot.activo=1 AND o.activo=1"
 ." GROUP BY ot.operador_id"
@@ -67,9 +67,9 @@ while($rs = $result->fetch_array(MYSQLI_ASSOC)) {
 
   $outp .= ',"monto_dolares":'    . round($rs["monto_dolares"], 2);
 
-  $outp .= ',"origen_monto":'     . round($rs["origen_monto"], 0);
+  $outp .= ',"origen_monto_comisiones":'     . round($rs["total_origen_comision_dolares"], 0);
 
-  $outp .= ',"destino_monto":'    . round($rs["destino_monto"],2);
+  $outp .= ',"destino_monto_comisiones":'    . round($rs["total_destino_comision_dolares"],2);
 
   $outp .= ',"count_transacc":'   . $rs["count_transacc"];
 
@@ -91,9 +91,10 @@ while($rs = $result->fetch_array(MYSQLI_ASSOC)) {
 
 $outp = '{"records":['.$outp.']}';
 
-/*experimento, devolver el sql como otro campo del json
-$outp = '{"records":['.$outp.']';
-$outp .= ',"sql":"'.$sql.'"}';
+//DEBUG. experimento, devolver el sql como otro campo del json
+/*
+$outp = '{"records":['.$outp.'],
+  "sql":"' .$sql. '"}';
 */
 
 //TODO. manejar el error cuando no se consigue data

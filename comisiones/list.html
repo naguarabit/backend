@@ -251,40 +251,18 @@ borrando el atributo disabled="true"-->
 
     <!--TODO. agrupar estas columnas en las filas, tipo lista, una arriba de otra, o colocar botones que se ocultan dependiendo del status de la transacciones-->
 
-    <th style="width:10%">Pais origen</th>
-
-    <!--th style="width:10%;text-align:right">Monto US$</th>
-
-    <th style="width:10%;text-align:center" colspan="2" style="text-align:right">Monto/Origen</th>
-
-    <th style="width:10%;text-align:center" colspan="2" style="text-align:right">Monto/Destino</th-->
-
-    <th style="width:10%;text-align:center" style="text-align:right"># Transacciones</th>
-
+    <th style="width:10%">País origen</th>
+    <th style="width:10%;text-align:center" style="text-align:right">Conteo Transacc</th>
     <th style="width:10%;text-align:center;">Total US$</th>
     <th style="width:10%;text-align:center;">Promedio US$</th>
-    <th style="width:10%;text-align:center">Comisiôn Origen</th>
-    <th style="text-align:center">Comisiôn Destino</th>
-    <th style="text-align:center">Comisiôn Total US$</th>
-    
+    <th style="width:10%;text-align:center">Comisión Origen</th>
+    <th style="text-align:center">Comisión Destino</th>
+    <th style="text-align:center">Comisión Total US$</th>
     <th style="text-align:center">Operador</th>
     <th style="text-align:center">Fecha último pago</th>
-    <!--th style="text-align:right;" style="text-align:right">Promedio Destino</th-->
-
-    <!--th>Referencia</th>
-
-    <th>Fecha/Hora</th>
-
-	  <th style="width:6%">Usuario</th>
-
+    <!--TODO. evaluar si dehjamos esta columna
     <th>Estatus</th>
-
-    <th style="text-align:center">Pago Origen</th>
-
-    <th style="text-align:center">Pago Destino</th>
-
     -->
-
   </tr>
 
   </thead>
@@ -365,15 +343,16 @@ borrando el atributo disabled="true"-->
     <!--td><a target="_BLANK" href="#!/pais/{{ x.destino_codpais }}">{{ x.destino_codpais}}</a></td-->
 
 
+    <!--transacciones conteo y total monto-->
     <td style="text-align:center; color:green"><a target="_BLANK" title="Nro. total de transacciones desde {{ x.origen_codpais }} hacia {{ x.destino_codpais }}">{{ x.count_transacc}}</a></td>
+    <td style="text-align:center; color:green">{{ x.monto_dolares | number: 1.1 }}</td> 
     
     <!--montos promedio-->
-    <td style="text-align:center; color:green">{{ x.monto_dolares | number: 1.1 }}</td> 
     <td style="text-align:center; color:green">{{ (x.monto_dolares / x.count_transacc) | number: 1.1 }}</td> 
 
     <!--montos comisiones-->
-    <td style="text-align:center; color:green">{{ 10 | number: 1.1 }}</td> 
-    <td style="text-align:center; color:green">{{ 15 | number: 1.1 }}</td> 
+    <td style="text-align:center; color:green">{{ x.origen_monto_comisiones | number: 1.1 }}</td> 
+    <td style="text-align:center; color:green">{{ x.destino_monto_comisiones | number: 1.1 }}</td> 
     <td style="text-align:center; color:green">{{ x.monto_comision_dolares | number: 1.1 }}</td> 
 
     <!--datos de operador-->
